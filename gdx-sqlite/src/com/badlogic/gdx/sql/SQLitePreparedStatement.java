@@ -1,3 +1,6 @@
+package com.badlogic.gdx.sql;
+
+
 public interface SQLitePreparedStatement {
 		
 	public void setInt(int pos , int value);
