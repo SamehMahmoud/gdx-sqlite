@@ -97,7 +97,7 @@ public class AndroidDatabaseManager implements DatabaseManager {
 		
 		@Override
 		public SQLitePreparedStatement createPreparedStatement(String sql) throws SQLiteGdxException{
-			SQLitePreparedStatement stmt = new AndroidPreparedStatement();
+			AndroidPreparedStatement stmt = new AndroidPreparedStatement();
 			try{
 				SQLiteStatement s = database.compileStatement(sql);
 				stmt.setPreparedStatement(s);
