@@ -93,6 +93,17 @@ public class AndroidDatabaseManager implements DatabaseManager {
 				throw new SQLiteGdxException(e);
 			}
 		}
+		
+		
+		@Override
+		public SQLitePreparedStatement createPreparedStatement(String sql) throws SQLiteGdxException{
+			try{
+					
+			}
+			catch(SQLiteException ex){
+				
+			}
+		}
 
 	}
 
