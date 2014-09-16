@@ -48,5 +48,8 @@ public interface Database {
 	 * @return the passed {@link DatabaseCursor}.
 	 * @throws SQLiteGdxException */
 	public DatabaseCursor rawQuery (DatabaseCursor cursor, String sql) throws SQLiteGdxException;
+	
+	
+	public SQLitePreparedStatement createPreparedStatement(String sql) throws SQLiteGdxException;
 
 }
