@@ -2,6 +2,8 @@ package com.badlogic.gdx.sqlite.android;
 
 import com.badlogic.gdx.sql.SQLitePreparedStatement;
 import android.database.sqlite.SQLiteStatement;
+import com.badlogic.gdx.sql.SQLiteGdxRuntimeException;
+import com.badlogic.gdx.Gdx;
 
 public class AndroidPreparedStatement implements SQLitePreparedStatement{
 
@@ -12,31 +14,79 @@ public class AndroidPreparedStatement implements SQLitePreparedStatement{
   	}
 
 	public void setInt(int pos , int value){
-      	    stmt.bindLong(pos , (long)value);
+		try{
+			stmt.bindLong(pos , (long)value);
+		}
+		catch(SQLException ex){
+			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in setting the int", e);
+			throw new SQLiteGdxRuntimeException(e);
+		}
+      	    
 	}
 	
 	public void setString(int pos , String value){
-	    stmt.binfString(pos , value);
+		try{
+			stmt.binfString(pos , value);
+		}
+		catch(SQLException ex){
+			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in setting the string", e);
+			throw new SQLiteGdxRuntimeException(e);
+		}
 	}
 	
 	public void setDouble(int post , double value){
-	    stmt,bindDouble(pos , value);
+		try{
+			stmt,bindDouble(pos , value);
+		}
+		catch(SQLException ex){
+			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in setting the double", e);
+			throw new SQLiteGdxRuntimeException(e);
+		}
 	}
 	
 	public void setFloat(int pos , float value){
-	    stmt.bindDouble(pos , (double)value);
+		try{
+			stmt.bindDouble(pos , (double)value);
+		}
+		catch(SQLException ex){
+			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in setting the float", e);
+			throw new SQLiteGdxRuntimeException(e);
+		}		
+		
+	    
 	}
 	
 	public void setBytes(int pos , byte[] bytes){
-	    stmt.bindBlob(pos , bytes);
+		try{
+			stmt.bindBlob(pos , bytes);
+		}
+		catch(SQLException ex){
+			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in setting the bytes", e);
+			throw new SQLiteGdxRuntimeException(e);
+		}
+	    
 	}
 	
 	public void setLong(int pos , long value){
-	    stmt.bindLong(post , value);
+		try{
+			stmt.bindLong(post , value);
+		}
+		catch(SQLException ex){
+			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in setting the long", e);
+			throw new SQLiteGdxRuntimeException(e);
+		}		
+	    
 	}
 	
 	public boolean execute(){
-	    stmt.execute();
+		try{
+			stmt.execute();	
+		}
+		catch(SQLException ex){
+			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in executing", e);
+			throw new SQLiteGdxRuntimeException(e);
+		}
+	    
 	}
 
 }
