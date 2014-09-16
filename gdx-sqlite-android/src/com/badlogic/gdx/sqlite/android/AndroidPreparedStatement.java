@@ -6,6 +6,10 @@ import android.database.sqlite.SQLiteStatement;
 public class AndroidPreparedStatement implements SQLitePreparedStatement{
 
   private SQLiteStatement stmt;
+  
+  	void setPreparedStatement(SQLitePreparedStatement stmt){
+  		this.stmt = stmt;
+  	}
 
 	public void setInt(int pos , int value){
       	    stmt.bindLong(pos , (long)value);
