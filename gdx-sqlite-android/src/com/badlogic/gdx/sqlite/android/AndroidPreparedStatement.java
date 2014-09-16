@@ -36,7 +36,7 @@ public class AndroidPreparedStatement implements SQLitePreparedStatement{
 	
 	public void setDouble(int post , double value){
 		try{
-			stmt,bindDouble(pos , value);
+			stmt.bindDouble(pos , value);
 		}
 		catch(SQLException ex){
 			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in setting the double", e);
