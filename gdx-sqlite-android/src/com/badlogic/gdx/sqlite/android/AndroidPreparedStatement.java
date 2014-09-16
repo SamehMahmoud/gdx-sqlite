@@ -8,7 +8,7 @@ public class AndroidPreparedStatement implements SQLitePreparedStatement{
   private SQLiteStatement stmt;
 
 	public void setInt(int pos , int value){
-      stmt.bindLong(pos , (long)value);
+      	    stmt.bindLong(pos , (long)value);
 	}
 	
 	public void setString(int pos , String value){
