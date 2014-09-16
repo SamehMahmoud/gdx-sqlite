@@ -7,7 +7,7 @@ public class AndroidPreparedStatement implements SQLitePreparedStatement{
 
   private SQLiteStatement stmt;
   
-  	void setPreparedStatement(SQLitePreparedStatement stmt){
+  	void setPreparedStatement(SQLiteStatement stmt){
   		this.stmt = stmt;
   	}
 
