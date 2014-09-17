@@ -6,7 +6,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
+import com.badlogic.gdx.sql.SQLitePreparedStatement;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.sql.Database;
 import com.badlogic.gdx.sql.DatabaseCursor;
@@ -102,6 +102,11 @@ public class DesktopDatabaseManager implements DatabaseManager {
 			} catch (SQLException e) {
 				throw new SQLiteGdxException(e);
 			}
+		}
+
+		@Override
+		public SQLitePreparedStatement createPreparedStatement(String sql) throws SQLiteGdxException{
+			throw new SQLiteGdxException("Not supported yet !");		
 		}
 
 	}
