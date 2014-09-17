@@ -4,6 +4,8 @@ import com.badlogic.gdx.sql.SQLitePreparedStatement;
 import android.database.sqlite.SQLiteStatement;
 import com.badlogic.gdx.sql.SQLiteGdxRuntimeException;
 import com.badlogic.gdx.Gdx;
+import android.database.SQLException;
+import com.badlogic.gdx.sql.DatabaseFactory;
 
 public class AndroidPreparedStatement implements SQLitePreparedStatement{
 
@@ -18,29 +20,29 @@ public class AndroidPreparedStatement implements SQLitePreparedStatement{
 			stmt.bindLong(pos , (long)value);
 		}
 		catch(SQLException ex){
-			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in setting the int", e);
-			throw new SQLiteGdxRuntimeException(e);
+			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in setting the int", ex);
+			throw new SQLiteGdxRuntimeException(ex);
 		}
       	    
 	}
 	
 	public void setString(int pos , String value){
 		try{
-			stmt.binfString(pos , value);
+			stmt.bindString(pos , value);
 		}
 		catch(SQLException ex){
-			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in setting the string", e);
-			throw new SQLiteGdxRuntimeException(e);
+			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in setting the string", ex);
+			throw new SQLiteGdxRuntimeException(ex);
 		}
 	}
 	
-	public void setDouble(int post , double value){
+	public void setDouble(int pos , double value){
 		try{
 			stmt.bindDouble(pos , value);
 		}
 		catch(SQLException ex){
-			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in setting the double", e);
-			throw new SQLiteGdxRuntimeException(e);
+			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in setting the double", ex);
+			throw new SQLiteGdxRuntimeException(ex);
 		}
 	}
 	
@@ -49,8 +51,8 @@ public class AndroidPreparedStatement implements SQLitePreparedStatement{
 			stmt.bindDouble(pos , (double)value);
 		}
 		catch(SQLException ex){
-			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in setting the float", e);
-			throw new SQLiteGdxRuntimeException(e);
+			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in setting the float", ex);
+			throw new SQLiteGdxRuntimeException(ex);
 		}		
 		
 	    
@@ -61,30 +63,31 @@ public class AndroidPreparedStatement implements SQLitePreparedStatement{
 			stmt.bindBlob(pos , bytes);
 		}
 		catch(SQLException ex){
-			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in setting the bytes", e);
-			throw new SQLiteGdxRuntimeException(e);
+			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in setting the bytes", ex);
+			throw new SQLiteGdxRuntimeException(ex);
 		}
 	    
 	}
 	
 	public void setLong(int pos , long value){
 		try{
-			stmt.bindLong(post , value);
+			stmt.bindLong(pos , value);
 		}
 		catch(SQLException ex){
-			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in setting the long", e);
-			throw new SQLiteGdxRuntimeException(e);
+			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in setting the long", ex);
+			throw new SQLiteGdxRuntimeException(ex);
 		}		
 	    
 	}
 	
 	public boolean execute(){
 		try{
-			stmt.execute();	
+			stmt.execute();
+			return true;
 		}
 		catch(SQLException ex){
-			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in executing", e);
-			throw new SQLiteGdxRuntimeException(e);
+			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in executing", ex);
+			throw new SQLiteGdxRuntimeException(ex);
 		}
 	    
 	}
