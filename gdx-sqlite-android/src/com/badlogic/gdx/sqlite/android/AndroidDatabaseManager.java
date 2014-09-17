@@ -1,95 +1,124 @@
+
 package com.badlogic.gdx.sqlite.android;
 
-import com.badlogic.gdx.sql.SQLitePreparedStatement;
-import android.database.sqlite.SQLiteStatement;
-import com.badlogic.gdx.sql.SQLiteGdxRuntimeException;
-import com.badlogic.gdx.Gdx;
+import android.content.Context;
+import android.database.Cursor;
 import android.database.SQLException;
-import com.badlogic.gdx.sql.DatabaseFactory;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
+import android.database.sqlite.SQLiteStatement;
+import com.badlogic.gdx.sql.SQLitePreparedStatement;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.backends.android.AndroidApplication;
+import com.badlogic.gdx.sql.Database;
+import com.badlogic.gdx.sql.DatabaseCursor;
+import com.badlogic.gdx.sql.DatabaseManager;
+import com.badlogic.gdx.sql.SQLiteGdxException;
 
-public class AndroidPreparedStatement implements SQLitePreparedStatement{
+/** @author M Rafay Aleem */
+public class AndroidDatabaseManager implements DatabaseManager {
 
-  private SQLiteStatement stmt;
-  
-  	void setPreparedStatement(SQLiteStatement stmt){
-  		this.stmt = stmt;
-  	}
+	private Context context;
 
-	public void setInt(int pos , int value){
-		try{
-			stmt.bindLong(pos , (long)value);
+	private class AndroidDatabase implements Database {
+
+		private SQLiteDatabaseHelper helper;
+		private SQLiteDatabase database;
+		private Context context;
+
+		private final String dbName;
+		private final int dbVersion;
+		private final String dbOnCreateQuery;
+		private final String dbOnUpgradeQuery;
+
+		private AndroidDatabase (Context context, String dbName, int dbVersion, String dbOnCreateQuery, String dbOnUpgradeQuery) {
+			this.context = context;
+			this.dbName = dbName;
+			this.dbVersion = dbVersion;
+			this.dbOnCreateQuery = dbOnCreateQuery;
+			this.dbOnUpgradeQuery = dbOnUpgradeQuery;
 		}
-		catch(SQLException ex){
-			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in setting the int", ex);
-			throw new SQLiteGdxRuntimeException(ex);
+
+		@Override
+		public void setupDatabase () {
+			helper = new SQLiteDatabaseHelper(this.context, dbName, null, dbVersion, dbOnCreateQuery, dbOnUpgradeQuery);
 		}
-      	    
-	}
-	
-	public void setString(int pos , String value){
-		try{
-			stmt.bindString(pos , value);
+
+		@Override
+		public void openOrCreateDatabase () throws SQLiteGdxException {
+			try {
+				database = helper.getWritableDatabase();
+			} catch (SQLiteException e) {
+				throw new SQLiteGdxException(e);
+			}
 		}
-		catch(SQLException ex){
-			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in setting the string", ex);
-			throw new SQLiteGdxRuntimeException(ex);
+
+		@Override
+		public void closeDatabase () throws SQLiteGdxException {
+			try {
+				helper.close();
+			} catch (SQLiteException e) {
+				throw new SQLiteGdxException(e);
+			}
 		}
-	}
-	
-	public void setDouble(int pos , double value){
-		try{
-			stmt.bindDouble(pos , value);
+
+		@Override
+		public void execSQL (String sql) throws SQLiteGdxException {
+			try {
+				database.execSQL(sql);
+			} catch (SQLException e) {
+				throw new SQLiteGdxException(e);
+			}
 		}
-		catch(SQLException ex){
-			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in setting the double", ex);
-			throw new SQLiteGdxRuntimeException(ex);
+
+		@Override
+		public DatabaseCursor rawQuery (String sql) throws SQLiteGdxException {
+			AndroidCursor aCursor = new AndroidCursor();
+			try {
+				Cursor tmp = database.rawQuery(sql, null);
+				aCursor.setNativeCursor(tmp);
+				return aCursor;
+			} catch (SQLiteException e) {
+				throw new SQLiteGdxException(e);
+			}
 		}
-	}
-	
-	public void setFloat(int pos , float value){
-		try{
-			stmt.bindDouble(pos , (double)value);
+
+		@Override
+		public DatabaseCursor rawQuery (DatabaseCursor cursor, String sql) throws SQLiteGdxException {
+			AndroidCursor aCursor = (AndroidCursor)cursor;
+			try {
+				Cursor tmp = database.rawQuery(sql, null);
+				aCursor.setNativeCursor(tmp);
+				return aCursor;
+			} catch (SQLiteException e) {
+				throw new SQLiteGdxException(e);
+			}
 		}
-		catch(SQLException ex){
-			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in setting the float", ex);
-			throw new SQLiteGdxRuntimeException(ex);
-		}		
 		
-	    
+		
+		@Override
+		public SQLitePreparedStatement createPreparedStatement(String sql) throws SQLiteGdxException{
+			AndroidPreparedStatement stmt = new AndroidPreparedStatement();
+			try{
+				SQLiteStatement s = database.compileStatement(sql);
+				stmt.setPreparedStatement(s);
+				return stmt;
+			}
+			catch(SQLiteException ex){
+				throw new SQLiteGdxException(ex);
+			}
+		}
+
 	}
-	
-	public void setBytes(int pos , byte[] bytes){
-		try{
-			stmt.bindBlob(pos , bytes);
-		}
-		catch(SQLException ex){
-			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in setting the bytes", ex);
-			throw new SQLiteGdxRuntimeException(ex);
-		}
-	    
+
+	public AndroidDatabaseManager () {
+		AndroidApplication app = (AndroidApplication)Gdx.app;
+		context = app.getApplicationContext();
 	}
-	
-	public void setLong(int pos , long value){
-		try{
-			stmt.bindLong(pos , value);
-		}
-		catch(SQLException ex){
-			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in setting the long", ex);
-			throw new SQLiteGdxRuntimeException(ex);
-		}		
-	    
-	}
-	
-	public boolean execute(){
-		try{
-			stmt.execute();
-			return true;
-		}
-		catch(SQLException ex){
-			Gdx.app.log(DatabaseFactory.ERROR_TAG, "There was an error in executing", ex);
-			throw new SQLiteGdxRuntimeException(ex);
-		}
-	    
+
+	@Override
+	public Database getNewDatabase (String databaseName, int databaseVersion, String databaseCreateQuery, String dbOnUpgradeQuery) {
+		return new AndroidDatabase(this.context, databaseName, databaseVersion, databaseCreateQuery, dbOnUpgradeQuery);
 	}
 
 }
