@@ -1,0 +1,5 @@
+# cache for current jar dependency. DO NOT EDIT.
+# format is <lastModified> <length> <SHA-1> <path>
+# Encoding is UTF-8
+1411026455000 1368422 3e939f0c2d48b661d7e1b4e7a8ec44a176ba2e5c /home/sameh/git/gdx-sqlite/gdx-sqlite/libs/gdx.jar
+1411026455000 1368422 3e939f0c2d48b661d7e1b4e7a8ec44a176ba2e5c /home/sameh/git/gdx-sqlite/DatabaseTest/libs/gdx.jar
